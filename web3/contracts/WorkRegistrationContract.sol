@@ -61,6 +61,7 @@ contract WorkRegistrationContract {
         )
     {
         Work memory work = idToWork[workId];
+        require(bytes(work.title).length!=0,"Work doesn't exist");
         require(msg.value >= work.amount, "Not enough funds");
         (bool resp, ) = msg.sender.call{value: work.amount}("");
 
@@ -107,7 +108,7 @@ contract WorkRegistrationContract {
         uint amount,
         string memory lastUpdatedAt
     ) public {
-        require(idToWork[workId].amount != 0, "Work Art doesn't exist");
+           require(bytes( idToWork[workId].title).length!=0,"Work doesn't exist");
         require(
             idToWork[workId].owner == msg.sender,
             "You can't edit this work art"
@@ -145,12 +146,22 @@ contract WorkRegistrationContract {
     }
 
     function deleteWork(uint workId) public {
-        require(idToWork[workId].amount != 0, "Work Art doesn't exist");
+         require(bytes( idToWork[workId].title).length!=0,"Work doesn't exist");
         require(
             idToWork[workId].owner == msg.sender,
             "You can't edit this work art"
         );
         Work storage work = idToWork[workId];
         work.status = WorkStatus.DELETED;
+    }
+
+    function updateWorkStatus(uint256 _workId, WorkStatus _newStatus) external { 
+        // Add authorization checks: Only callable by WorkValidationContract (or authorized addresses)
+        Work storage work = idToWork[_workId];
+        work.status = _newStatus;
+    }
+
+     function getWorkStatus(uint256 _workId) public view returns (WorkStatus) { 
+        return idToWork[_workId].status;
     }
 }

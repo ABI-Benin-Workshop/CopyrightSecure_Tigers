@@ -40,8 +40,19 @@ interface IWorkRegistration {
             string memory createdAt,
             WorkStatus status
         );
+    function getInternalWork(uint workId) external view  returns (
+              uint _workId,
+            address _owner,
+            string memory title,
+            string memory description,
+            string memory createdAt,
+            WorkStatus status
+    );
 
     function deleteWork(uint workId) external;
 
-    function listWork() external view;
+    function listWork() external;
+
+    function updateWorkStatus(uint256 _workId, WorkStatus _newStatus) external;
+    function getWorkStatus(uint256 _workId) external view returns (WorkStatus);
 }
