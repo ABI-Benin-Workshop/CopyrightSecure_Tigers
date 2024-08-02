@@ -72,7 +72,7 @@ interface IWorkRegistration {
 
     function listWork() external;
 
-    function updateWorkStatus(uint256 _workId, WorkStatus _newStatus) external;
+    function updateWorkStatus(uint256 _workId) external;
     function getWorkStatus(uint256 _workId) external view returns (WorkStatus);
     function addWorkValidation(
         uint256 _workId,
