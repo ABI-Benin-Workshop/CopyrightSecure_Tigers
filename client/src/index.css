@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        -webkit-tap-highlight-color: transparent;
+        scrollbar-width: none;
+    }
+
+    body {
+        font-family: Inter, sans-serif !important;
+        min-height: 100vh;
+        color: white;
+        -ms-overflow-style: none;
+    }
+
+    body::-webkit-scrollbar {
+        display: none;
+    }
+
+    #root {
+        min-height: inherit;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bg-custom-gradient {
+        background-image: linear-gradient(to bottom right, #0f172a, #1e3a8a);
+    }
+}
+
+@layer utilities {
+    .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
