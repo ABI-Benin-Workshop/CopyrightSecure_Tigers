@@ -5,6 +5,10 @@ contract WorkRegistrationContract {
     constructor() {}
 
     uint workCounter = 0;
+    struct WorkValidation {
+      WorkStatus _status;
+      string observation;
+    }
 
     enum WorkStatus {
         PENDING,
@@ -21,6 +25,9 @@ contract WorkRegistrationContract {
         string createdAt;
         string lastUpdatedAt;
         WorkStatus status;
+        WorkValidation [] validations;
+        uint positiveReview;
+        uint negativeReview;
     }
 
     mapping(uint => Work) public idToWork;
@@ -40,8 +47,11 @@ contract WorkRegistrationContract {
             amount,
             createdAt,
             lastUpdatedAt,
-            WorkStatus.PENDING
-        );
+            WorkStatus.PENDING,
+            new WorkValidation[] (0),
+            0,
+            0
+          );
         workCounter++;
     }
 
@@ -87,7 +97,10 @@ contract WorkRegistrationContract {
             string memory title,
             string memory description,
             string memory createdAt,
-            WorkStatus status
+            WorkStatus status,
+            WorkValidation[] memory validation,
+            uint positiveReview,
+            uint negativeReview
         )
     {
         Work memory work = idToWork[workId];
@@ -97,7 +110,10 @@ contract WorkRegistrationContract {
             work.title,
             work.description,
             work.createdAt,
-            work.status
+            work.status,
+            work.validations,
+            work.positiveReview,
+            work.negativeReview
         );
     }
 
@@ -155,13 +171,41 @@ contract WorkRegistrationContract {
         work.status = WorkStatus.DELETED;
     }
 
-    function updateWorkStatus(uint256 _workId, WorkStatus _newStatus) external { 
+    function updateWorkStatus(uint256 _workId) external { 
         // Add authorization checks: Only callable by WorkValidationContract (or authorized addresses)
         Work storage work = idToWork[_workId];
-        work.status = _newStatus;
+        if(work.positiveReview> work.negativeReview ){
+          work.status = WorkStatus.APPROVED;
+        }else{
+          work.status = WorkStatus.REJECTED;
+        }
     }
 
      function getWorkStatus(uint256 _workId) public view returns (WorkStatus) { 
         return idToWork[_workId].status;
+    }
+
+      function addWorkValidation(
+        uint256 _workId,
+        WorkStatus _status,
+        string memory _observation
+    ) public {
+        // Add authorization checks: Only callable by WorkValidationContract (or authorized addresses)
+        // Example:
+        // require(msg.sender == address(workValidationContract), "Only WorkValidationContract can call this function");
+
+        Work storage work = idToWork[_workId];
+
+        work.validations.push(
+            WorkValidation({ _status: _status, observation: _observation })
+        );
+
+        if (_status==WorkStatus.APPROVED){
+            work.positiveReview++;
+        }
+
+        if(_status==WorkStatus.REJECTED){
+          work.negativeReview++;
+        }
     }
 }

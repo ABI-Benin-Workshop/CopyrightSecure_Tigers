@@ -6,17 +6,28 @@ interface IWorkRegistration {
         PENDING,
         APPROVED,
         REJECTED
+  
     }
+      struct WorkValidation {
+      WorkStatus _status;
+      string observation;
+    }
+
 
     struct Work {
         // <--- Declare Work struct in the interface
-        uint256 workId;
+  uint workId;
         address owner;
         string title;
         string description;
-        uint256 amount;
+        uint amount;
         string createdAt;
+        string lastUpdatedAt;
         WorkStatus status;
+        WorkValidation [] validations;
+        uint positiveReview;
+        uint negativeReview;
+
     }
 
     function addWork(
@@ -40,14 +51,22 @@ interface IWorkRegistration {
             string memory createdAt,
             WorkStatus status
         );
-    function getInternalWork(uint workId) external view  returns (
-              uint _workId,
+       function getInternalWork(
+        uint256 workId
+    )
+        external
+        view
+        returns (
+            uint256 _workId,
             address _owner,
             string memory title,
             string memory description,
             string memory createdAt,
-            WorkStatus status
-    );
+            WorkStatus status,
+            WorkValidation[] memory validation,
+            uint256 positiveReview,
+            uint256 negativeReview
+        );
 
     function deleteWork(uint workId) external;
 
@@ -55,4 +74,9 @@ interface IWorkRegistration {
 
     function updateWorkStatus(uint256 _workId, WorkStatus _newStatus) external;
     function getWorkStatus(uint256 _workId) external view returns (WorkStatus);
+    function addWorkValidation(
+        uint256 _workId,
+        WorkStatus _status,
+        string memory _observation
+    ) external;
 }

@@ -40,7 +40,7 @@ contract RoyaltyManagementContract is IRoyaltyManagment {
 
     // Distribute royalties for a work to the creator
     function distributeRoyalties(uint256 _workId) public payable override {
-        (, address creator, , , , ) = workRegistration.getInternalWork(_workId);
+        (, address creator,,,,,,,) = workRegistration.getInternalWork(_workId);
         uint256 royalties = calculateRoyalties(_workId);
 
         require(msg.value >= royalties, "Not enough funds to pay royalties");
