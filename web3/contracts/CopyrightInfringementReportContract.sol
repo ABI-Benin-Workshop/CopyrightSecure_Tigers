@@ -51,13 +51,18 @@ contract CopyrightInfringementReportContract {
     }
 
     // Function to update the status of a report (e.g., by an admin)
-    function updateReportStatus(uint256 _reportId, ReportStatus _newStatus) public {
-        // Add authorization checks here: Only an admin or authorized role should be able to change report status
-        InfringementReport storage report = reports[_reportId];
-        report.status = _newStatus;
+function updateReportStatus(uint256 _reportId, ReportStatus _newStatus) public {
+    // ... (Your authorization checks) ...
 
-        if(_newStatus==ReportStatus.ACTION_TAKEN){
-          workRegistration.addWorkValidation(report.workId, IWorkRegistration.WorkStatus.REJECTED, report.infringementDetails);
-        }
+    InfringementReport storage report = reports[_reportId];
+    report.status = _newStatus;
+
+    if (_newStatus == ReportStatus.ACTION_TAKEN) {
+        workRegistration.addWorkValidation(
+            report.workId, 
+            IWorkRegistration.WorkStatus.REJECTED, 
+            report.infringementDetails
+        );
     }
+}
 }

@@ -63,7 +63,6 @@ interface IWorkRegistration {
             string memory description,
             string memory createdAt,
             WorkStatus status,
-            WorkValidation[] memory validation,
             uint256 positiveReview,
             uint256 negativeReview
         );
@@ -79,4 +78,6 @@ interface IWorkRegistration {
         WorkStatus _status,
         string memory _observation
     ) external;
+
+  function getWorkValidations(uint256 _workId) external view returns (WorkValidation[] memory); 
 }
