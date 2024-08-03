@@ -3,11 +3,11 @@ pragma solidity ^0.8.24;
 
 import "./IWorkRegistration.sol";
 import "./IRoyaltyManagment.sol";
-import "./UserContract.sol";
+
 
 contract RoyaltyManagementContract is IRoyaltyManagment {
     IWorkRegistration public workRegistration;
-    UserContract public userContract;
+    
 
     // Royalty percentage (e.g., 10% = 1000)
     uint256 public royaltyPercentage = 1000;
@@ -16,9 +16,8 @@ contract RoyaltyManagementContract is IRoyaltyManagment {
 
     mapping(uint256 => uint256) public workUsage; // Track usage of each work
 
-    constructor(address _workRegistrationAddress, address _userContractAddress) {
+    constructor(address _workRegistrationAddress) {
         workRegistration = IWorkRegistration(_workRegistrationAddress);
-        userContract = UserContract(_userContractAddress);
     }
 
     // Function to record the usage of a work
@@ -31,8 +30,7 @@ contract RoyaltyManagementContract is IRoyaltyManagment {
         uint256 _workId
     ) public view override returns (uint256) {
         // Get unpaid views directly from UserContract:
-        uint256 viewsToPay = userContract
-            .getWorkViewCounts(_workId)
+        uint256 viewsToPay = workRegistration.getWorkViewCounts(_workId)
             .viewsSinceLastPayout;
         uint256 totalRevenue = viewsToPay * pricePerUsageUnit;
         return (totalRevenue * royaltyPercentage) / 10000;
@@ -40,7 +38,7 @@ contract RoyaltyManagementContract is IRoyaltyManagment {
 
     // Distribute royalties for a work to the creator
     function distributeRoyalties(uint256 _workId) public payable override {
-        (, address creator,,,,,,,) = workRegistration.getInternalWork(_workId);
+        (, address creator,,,,,,) = workRegistration.getInternalWork(_workId);
         uint256 royalties = calculateRoyalties(_workId);
 
         require(msg.value >= royalties, "Not enough funds to pay royalties");
@@ -50,7 +48,7 @@ contract RoyaltyManagementContract is IRoyaltyManagment {
         require(sent, "Failed to send royalties");
 
         // After successfully distributing, reset the view counter in UserContract:
-        userContract.resetViewsSinceLastPayout(_workId);
+        workRegistration.resetViewsSinceLastPayout(_workId);
 
         emit RoyaltiesPaid(_workId, creator, royalties);
     }

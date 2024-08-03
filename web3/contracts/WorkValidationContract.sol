@@ -15,7 +15,7 @@ contract WorkValidationContract {
     }
 
     modifier onlyValidator(address _validatorAddress, uint256 _workId) {
-        (, address owner, , , , , , , ) = workRegistration.getInternalWork(
+        (, address owner, , , , , ,  ) = workRegistration.getInternalWork(
             _workId
         );
         require(
@@ -33,29 +33,18 @@ contract WorkValidationContract {
         _;
     }
 
-    function validateWork(
-        uint256 _workId,
-        string memory observation
-    ) external onlyValidator(msg.sender, _workId) {
-        workRegistration.addWorkValidation(
-            _workId,
-            IWorkRegistration.WorkStatus.APPROVED,
-            observation
-        );
+function validateWork(uint256 _workId, string memory observation) external onlyValidator(msg.sender, _workId) {
+        workRegistration.addWorkValidation(_workId, IWorkRegistration.WorkStatus.APPROVED, observation);
+
+        // Update work status based on reviews (you might want to reconsider this logic based on your requirements)
+        workRegistration.updateWorkStatus(_workId); 
     }
 
-    function rejectWork(
-        uint256 _workId,
-        string memory observation
-    ) external onlyValidator(msg.sender, _workId) {
-        // ... (Your logic to mark a work as validated)
+      function rejectWork(uint256 _workId, string memory observation) external onlyValidator(msg.sender, _workId) {
+        workRegistration.addWorkValidation(_workId, IWorkRegistration.WorkStatus.REJECTED, observation);
 
-        // Example: Update the work status in WorkRegistrationContract
-        workRegistration.addWorkValidation(
-            _workId,
-            IWorkRegistration.WorkStatus.REJECTED,
-            observation
-        );
+        // Update work status based on reviews
+        workRegistration.updateWorkStatus(_workId); 
     }
 
     function getWorkStatus(
