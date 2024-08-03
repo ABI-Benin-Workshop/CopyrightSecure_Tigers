@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-import "./IWorkRegistration.sol";
 
 contract UserContract {
 
@@ -69,8 +68,5 @@ contract UserContract {
 
         return (user._pseudo, user._roles);
     }
-
-
-
    
 }
