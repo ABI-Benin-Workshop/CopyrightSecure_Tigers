@@ -7,7 +7,7 @@ const Home = () => {
     <main className="">
       <Tabbar />
       <div className="flex justify-between pt-8 pb-6">
-        <div className="relative w-[400px]">
+        <div className="relative w-[400px] 2xl:w-1/3">
           <input
             type="text"
             id="voice-search"
@@ -24,7 +24,7 @@ const Home = () => {
         </div>
         <span>718 contents</span>
       </div>
-      <div className="grid grid-cols-4 gap-y-4">
+      <div className="grid grid-cols-4 2xl:grid-cols-8 gap-y-4">
         <Content />
         <Content />
         <Content />

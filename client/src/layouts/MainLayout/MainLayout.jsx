@@ -9,7 +9,6 @@ const MainLayout = () => {
   return (
     <div className="flex flex-col bg-custom-gradient grow pt-[81px] px-4 relative">
       <Navbar />
-
       <Outlet />
     </div>
   );

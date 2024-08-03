@@ -28,6 +28,10 @@
     .bg-custom-gradient {
         background-image: linear-gradient(to bottom right, #0f172a, #1e3a8a);
     }
+
+    .bg-custom-gradient2 {
+        background-image: linear-gradient(to bottom, #1e3a8a, #0f172a);
+    }
 }
 
 @layer utilities {
