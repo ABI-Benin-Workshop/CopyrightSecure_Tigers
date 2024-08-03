@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import "./IWorkRegistration.sol";
 import "./IRoyaltyManagment.sol";
-import "./UserContract.sol";
+
 
 contract RoyaltyManagementContract is IRoyaltyManagment {
     IWorkRegistration public workRegistration;
@@ -16,9 +16,8 @@ contract RoyaltyManagementContract is IRoyaltyManagment {
 
     mapping(uint256 => uint256) public workUsage; // Track usage of each work
 
-    constructor(address _workRegistrationAddress, address _userContractAddress) {
+    constructor(address _workRegistrationAddress) {
         workRegistration = IWorkRegistration(_workRegistrationAddress);
-       
     }
 
     // Function to record the usage of a work

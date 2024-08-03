@@ -7,8 +7,8 @@ contract WorkRegistrationContract {
     uint workCounter = 0;
 
     struct WorkValidation {
-      WorkStatus _status;
-      string observation;
+        WorkStatus _status;
+        string observation;
     }
 
     enum WorkStatus {
@@ -26,43 +26,43 @@ contract WorkRegistrationContract {
         string createdAt;
         string lastUpdatedAt;
         WorkStatus status;
-        WorkValidation [] validations;
+        WorkValidation[] validations;
         uint positiveReview;
         uint negativeReview;
     }
 
-     // Structure to store view counts for each work
+    // Structure to store view counts for each work
     struct WorkViewCounts {
-        uint256 totalViews;        // Total number of views ever
+        uint256 totalViews; // Total number of views ever
         uint256 viewsSinceLastPayout; // Views since the last royalty distribution
     }
 
     // Mapping to store view counts for each work
     mapping(uint256 => WorkViewCounts) public workViews;
 
-
     mapping(uint => Work) public idToWork;
 
     function addWork(
-    string memory title,
-    string memory description,
-    uint amount,
-    string memory createdAt,
-    string memory lastUpdatedAt
-) public {
-   Work storage newWork = idToWork[workCounter];
-    newWork.workId = workCounter;
-    newWork.owner = msg.sender;
-    newWork.title = title;
-    newWork.description = description;
-    newWork.amount = amount;
-    newWork.createdAt = createdAt;
-    newWork.lastUpdatedAt = lastUpdatedAt;
-    newWork.status = WorkStatus.PENDING;
-    newWork.positiveReview = 0;
-    newWork.negativeReview = 0;
-    workCounter++;
-}
+        string memory title,
+        string memory description,
+        uint amount,
+        string memory createdAt,
+        string memory lastUpdatedAt
+    ) public {
+        Work storage newWork = idToWork[workCounter];
+        newWork.workId = workCounter;
+        newWork.owner = msg.sender;
+        newWork.title = title;
+        newWork.description = description;
+        newWork.amount = amount;
+        newWork.createdAt = createdAt;
+        newWork.lastUpdatedAt = lastUpdatedAt;
+        newWork.status = WorkStatus.PENDING;
+        newWork.positiveReview = 0;
+        newWork.negativeReview = 0;
+        workCounter++;
+    }
+
     function getWork(
         uint workId
     )
@@ -79,7 +79,7 @@ contract WorkRegistrationContract {
         )
     {
         Work memory work = idToWork[workId];
-        require(bytes(work.title).length!=0,"Work doesn't exist");
+        require(bytes(work.title).length != 0, "Work doesn't exist");
         require(msg.value >= work.amount, "Not enough funds");
         (bool resp, ) = msg.sender.call{value: work.amount}("");
 
@@ -130,7 +130,10 @@ contract WorkRegistrationContract {
         uint amount,
         string memory lastUpdatedAt
     ) public {
-           require(bytes( idToWork[workId].title).length!=0,"Work doesn't exist");
+        require(
+            bytes(idToWork[workId].title).length != 0,
+            "Work doesn't exist"
+        );
         require(
             idToWork[workId].owner == msg.sender,
             "You can't edit this work art"
@@ -142,7 +145,7 @@ contract WorkRegistrationContract {
         work.lastUpdatedAt = lastUpdatedAt;
     }
 
-      function listWork() public view returns (Work[] memory) {
+    function listWork() public view returns (Work[] memory) {
         address owner = msg.sender;
         uint256 ownerWorkCount = 0;
 
@@ -173,7 +176,10 @@ contract WorkRegistrationContract {
     }
 
     function deleteWork(uint workId) public {
-         require(bytes( idToWork[workId].title).length!=0,"Work doesn't exist");
+        require(
+            bytes(idToWork[workId].title).length != 0,
+            "Work doesn't exist"
+        );
         require(
             idToWork[workId].owner == msg.sender,
             "You can't edit this work art"
@@ -182,21 +188,21 @@ contract WorkRegistrationContract {
         work.status = WorkStatus.DELETED;
     }
 
-    function updateWorkStatus(uint256 _workId) external { 
+    function updateWorkStatus(uint256 _workId) external {
         // Add authorization checks: Only callable by WorkValidationContract (or authorized addresses)
         Work storage work = idToWork[_workId];
-        if(work.positiveReview> work.negativeReview ){
-          work.status = WorkStatus.APPROVED;
-        }else{
-          work.status = WorkStatus.REJECTED;
+        if (work.positiveReview > work.negativeReview) {
+            work.status = WorkStatus.APPROVED;
+        } else {
+            work.status = WorkStatus.REJECTED;
         }
     }
 
-     function getWorkStatus(uint256 _workId) public view returns (WorkStatus) { 
+    function getWorkStatus(uint256 _workId) public view returns (WorkStatus) {
         return idToWork[_workId].status;
     }
 
-  function addWorkValidation(
+    function addWorkValidation(
         uint256 _workId,
         WorkStatus _status,
         string memory _observation
@@ -204,26 +210,29 @@ contract WorkRegistrationContract {
         // Add authorization checks (example below):
         // require(msg.sender == address(workValidationContract), "Unauthorized");
 
-       Work storage work = idToWork[_workId];
-       WorkValidation memory newValidation = WorkValidation({
-        _status: _status,
-        observation: _observation
-    });
+        Work storage work = idToWork[_workId];
+        WorkValidation memory newValidation = WorkValidation({
+            _status: _status,
+            observation: _observation
+        });
 
-    // Push the new validation onto the validations array
-      work.validations.push(newValidation); 
+        // Push the new validation onto the validations array
+        work.validations.push(newValidation);
         if (_status == WorkStatus.APPROVED) {
             work.positiveReview++;
         } else if (_status == WorkStatus.REJECTED) {
             work.negativeReview++;
         }
     }
-    function getWorkValidations(uint256 _workId) public view returns (WorkValidation[] memory) {
-    return idToWork[_workId].validations;
-}
 
-     // Function to increment view count for a work
-    function incrementWorkViews(uint256 _workId) external { 
+    function getWorkValidations(
+        uint256 _workId
+    ) public view returns (WorkValidation[] memory) {
+        return idToWork[_workId].validations;
+    }
+
+    // Function to increment view count for a work
+    function incrementWorkViews(uint256 _workId) external {
         workViews[_workId].totalViews++;
         workViews[_workId].viewsSinceLastPayout++;
     }
@@ -235,8 +244,9 @@ contract WorkRegistrationContract {
     }
 
     // Example function to get view counts for a work
-    function getWorkViewCounts(uint256 _workId) external view returns (WorkViewCounts memory) {
+    function getWorkViewCounts(
+        uint256 _workId
+    ) external view returns (WorkViewCounts memory) {
         return workViews[_workId];
     }
-    
 }
