@@ -67,6 +67,11 @@ interface IWorkRegistration {
             uint256 negativeReview
         );
 
+           struct WorkViewCounts {
+        uint256 totalViews;        // Total number of views ever
+        uint256 viewsSinceLastPayout; // Views since the last royalty distribution
+    }
+
     function deleteWork(uint workId) external;
 
     function listWork() external;
@@ -80,4 +85,6 @@ interface IWorkRegistration {
     ) external;
 
   function getWorkValidations(uint256 _workId) external view returns (WorkValidation[] memory); 
+  function getWorkViewCounts(uint256 _workId) external view returns (WorkViewCounts memory);
+  function resetViewsSinceLastPayout(uint256 _workId) external;
 }

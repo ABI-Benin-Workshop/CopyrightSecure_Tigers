@@ -7,7 +7,7 @@ import "./UserContract.sol";
 
 contract RoyaltyManagementContract is IRoyaltyManagment {
     IWorkRegistration public workRegistration;
-    UserContract public userContract;
+    
 
     // Royalty percentage (e.g., 10% = 1000)
     uint256 public royaltyPercentage = 1000;
@@ -18,7 +18,7 @@ contract RoyaltyManagementContract is IRoyaltyManagment {
 
     constructor(address _workRegistrationAddress, address _userContractAddress) {
         workRegistration = IWorkRegistration(_workRegistrationAddress);
-        userContract = UserContract(_userContractAddress);
+       
     }
 
     // Function to record the usage of a work
@@ -31,8 +31,7 @@ contract RoyaltyManagementContract is IRoyaltyManagment {
         uint256 _workId
     ) public view override returns (uint256) {
         // Get unpaid views directly from UserContract:
-        uint256 viewsToPay = userContract
-            .getWorkViewCounts(_workId)
+        uint256 viewsToPay = workRegistration.getWorkViewCounts(_workId)
             .viewsSinceLastPayout;
         uint256 totalRevenue = viewsToPay * pricePerUsageUnit;
         return (totalRevenue * royaltyPercentage) / 10000;
@@ -50,7 +49,7 @@ contract RoyaltyManagementContract is IRoyaltyManagment {
         require(sent, "Failed to send royalties");
 
         // After successfully distributing, reset the view counter in UserContract:
-        userContract.resetViewsSinceLastPayout(_workId);
+        workRegistration.resetViewsSinceLastPayout(_workId);
 
         emit RoyaltiesPaid(_workId, creator, royalties);
     }

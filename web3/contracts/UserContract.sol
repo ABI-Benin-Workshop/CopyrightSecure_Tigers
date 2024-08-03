@@ -1,6 +1,5 @@
-// SPDX-License-Identifier: SEE LICENSE IN LICENSE
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./IWorkRegistration.sol";
 
 contract UserContract {
@@ -16,15 +15,7 @@ contract UserContract {
         Role[] _roles;
     }
 
-   // Structure to store view counts for each work
-    struct WorkViewCounts {
-        uint256 totalViews;        // Total number of views ever
-        uint256 viewsSinceLastPayout; // Views since the last royalty distribution
-    }
-
-    // Mapping to store view counts for each work
-    mapping(uint256 => WorkViewCounts) public workViews;
-
+  
 
     event UserCreated(address indexed userAddress, string pseudo, Role role);
 
@@ -81,21 +72,5 @@ contract UserContract {
 
 
 
-        // Function to increment view count for a work
-    function incrementWorkViews(uint256 _workId) external { 
-        workViews[_workId].totalViews++;
-        workViews[_workId].viewsSinceLastPayout++;
-    }
-
-    // Function to reset the "viewsSinceLastPayout" counter (likely called after royalty distribution)
-    function resetViewsSinceLastPayout(uint256 _workId) external {
-        // Add any necessary authorization checks here (e.g., only owner of the work or a royalty manager)
-        workViews[_workId].viewsSinceLastPayout = 0;
-    }
-
-    // Example function to get view counts for a work
-    function getWorkViewCounts(uint256 _workId) external view returns (WorkViewCounts memory) {
-        return workViews[_workId];
-    }
-    
+   
 }
