@@ -2,20 +2,28 @@ import { MdOutlinePerson } from "react-icons/md";
 import { MdOutlineWallet } from "react-icons/md";
 import PrimaryButton from "../../../components/Button/PrimaryButton";
 import RoleManager from "../../../components/RoleManager/RoleManager";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { StateContext } from "../../../context/context";
 import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const { connect } = useContext(StateContext);
   const navigate = useNavigate();
+  const [role, setRole] = useState(0);
+  const [username, setUsername] = useState();
+
+  const handleChange = (e) => {
+    setUsername(e.target.value);
+  };
 
   const handleRegister = () => {
-    connect().then((res) => {
-      if (res.success) {
-        return navigate("/", { replace: true });
-      }
-    });
+    if (username) {
+      connect(true, [username, role]).then((res) => {
+        if (res.success) {
+          return navigate("/", { replace: true });
+        }
+      });
+    }
   };
 
   return (
@@ -34,16 +42,18 @@ const Register = () => {
               Username
             </label>
             <input
+              onChange={handleChange}
               required
               type="text"
               id="username"
+              value={username}
               placeholder="Enter your username"
               className="block p-2 text-sm text-gray-900 rounded-lg outline-none placeholder:text-sm focus:border ring-0 focus:ring-0 focus:border-secondary"
             />
           </div>
           <div className="flex flex-col mb-2 gap-y-2">
             <span className="text-sm font-bold">Choose a role</span>
-            <RoleManager />
+            <RoleManager role={role} setRole={setRole} />
           </div>
           <PrimaryButton
             className="bg-secondary"

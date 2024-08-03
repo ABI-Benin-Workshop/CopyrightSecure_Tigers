@@ -8,11 +8,10 @@ const Roles = {
   VALIDATOR: 2,
 };
 
-const RoleManager = () => {
+const RoleManager = ({ role, setRole }) => {
   //0 -> FINAL_USER
   //1 -> CONTENT_CREATOR
   //2 -> VALIDATOR
-  const [role, setRole] = useState(Roles.FINAL_USER);
 
   const handleRoleChanged = (e) => {
     setRole(Number(e.target.value));

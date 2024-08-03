@@ -1,15 +1,25 @@
 import { useForm } from "react-hook-form";
 import PrimaryButton from "../../components/Button/PrimaryButton";
+import { useContext } from "react";
+import { StateContext } from "../../context/context";
+import { useNavigate } from "react-router-dom";
 
 const NewContent = () => {
+  const navigate = useNavigate();
+  const { addWork } = useContext(StateContext);
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
+
+    await addWork(data.title, data.description, data.amount);
+    reset({});
+    return navigate("/");
   };
 
   return (

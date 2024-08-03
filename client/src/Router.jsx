@@ -25,7 +25,6 @@ const router = createBrowserRouter([
   },
   {
     loader: async () => {
-      console.log("im here");
       if (!isConnected()) {
         return redirect("/auth/login");
       }
